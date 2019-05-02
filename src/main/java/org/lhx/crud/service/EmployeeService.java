@@ -28,19 +28,6 @@ public class EmployeeService {
         return employeeMapper.selectByExampleWithDept(null);
     }
 
-    public Msg saveEmp(@Valid Employee employee, BindingResult result) {
-        if(result.hasErrors()){
-            Map<String,Object> map = new HashMap<>();
-            List<FieldError> fieldErrors = result.getFieldErrors();
-            for (FieldError fieldError : fieldErrors) {
-                map.put(fieldError.getField(),fieldError.getDefaultMessage());
-            }
-            return Msg.fail().add("errorFields",map);
-        }else {
-            employeeMapper.insertSelective(employee);
-            return Msg.success();
-        }
-    }
 
     public Boolean checkUser(String empName) {
         EmployeeExample example = new EmployeeExample();
@@ -48,5 +35,9 @@ public class EmployeeService {
         criteria.andEmpNameEqualTo(empName);
         long l = employeeMapper.countByExample(example);
         return l == 0;
+    }
+
+    public void saveEmp(Employee employee) {
+        employeeMapper.insertSelective(employee);
     }
 }
