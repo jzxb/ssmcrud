@@ -9,4 +9,9 @@
     <typeAliases>
         <package name="org.lhx.crud.bean"/>
     </typeAliases>
+    <plugins>
+        <plugin interceptor="com.github.pagehelper.PageInterceptor">
+
+        </plugin>
+    </plugins>
 </configuration>
