@@ -9,12 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +26,37 @@ public class EmployeeController {
 
     @Autowired
     EmployeeService employeeService;
+
+    @RequestMapping(value = "/emp/{ids}",method = RequestMethod.DELETE)
+    @ResponseBody
+    public Msg deleteEmp(@PathVariable("ids")String ids){
+        if (ids.contains("-")){
+            List<Integer> delIds = new ArrayList<>();
+            String[] str = ids.split("-");
+            for (String s : str) {
+                delIds.add(Integer.parseInt(s));
+            }
+            employeeService.deleteBatch(delIds);
+        }else {
+            Integer id = Integer.parseInt(ids);
+            employeeService.deleteEmp(id);
+        }
+        return Msg.success();
+    }
+
+    @RequestMapping(value = "/emp/{empId}",method = RequestMethod.PUT)
+    @ResponseBody
+    public Msg saveEmp(Employee employee){
+        employeeService.updateEmp(employee);
+        return Msg.success();
+    }
+
+    @RequestMapping(value = "/emp/{id}",method = RequestMethod.GET)
+    @ResponseBody
+    public Msg getEmp(@PathVariable("id")Integer id){
+        Employee employee = employeeService.getEmp(id);
+        return Msg.success().add("emp",employee);
+    }
 
     @RequestMapping("checkuser")
     public Msg checkUser(@RequestParam("empName") String empName){
